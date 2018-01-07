@@ -2,6 +2,7 @@
 #include <iostream>
 #include <cctype>
 
+//open the vm file and check for open errors
 vm_parser::vm_parser(std::string s)
 {
 	openError = false;
@@ -13,6 +14,13 @@ vm_parser::vm_parser(std::string s)
 	}
 }
 
+//returns status of file open procedure
+bool vm_parser::errorCheck()
+{
+	return openError;
+}
+
+//checks to see if there are more commands in the file
 bool vm_parser::hasMoreCommands()
 {
 
@@ -24,22 +32,28 @@ bool vm_parser::hasMoreCommands()
 	return false; 
 }
 
+//advances to the next instruction
+//deletes any comments
+//ignores blank lines
 void vm_parser::advance()
 {
 
 	bool blankLine = true;
 	
+	//loop while line is a comment or blank line and file has more commands
 	do
 	{
 		blankLine = true;
 
 		getline(inputFile, instruction);
 
+		//find and erase comments
 		if (instruction.find("//") != std::string::npos)
 		{
 			instruction.erase(instruction.find("//"));
 		}
 
+		//test for blank line
 		for (size_t i = 0; i < instruction.length(); i++)
 		{
 			if (instruction[i] != ' ' || instruction[i] != '\t' || instruction[i] != '\n')
@@ -50,15 +64,9 @@ void vm_parser::advance()
 
 	} while (blankLine && hasMoreCommands());
 
-	std::cout << instruction << std::endl;
 }
 
-bool vm_parser::errorCheck()
-{
-	return openError;
-}
-
-
+//find the command type
 Command vm_parser::commandType()
 {
 	size_t found = instruction.find("add");
@@ -142,6 +150,7 @@ Command vm_parser::commandType()
 
 }
 
+//find the segment type
 Segment vm_parser::arg1()
 {
 	if (type == C_ARITHMETIC)
@@ -255,6 +264,7 @@ Segment vm_parser::arg1()
 	return SERROR;
 }
 
+//find the last arge
 std::string vm_parser::arg2()
 {
 	std::string temp;
@@ -262,19 +272,20 @@ std::string vm_parser::arg2()
 	if (type == C_PUSH || type == C_POP)
 	{
 		for (size_t i = 0; i < instruction.length(); i++)
+		{
+			if (isdigit(instruction[i]))
 			{
-				if (isdigit(instruction[i])) 
-				{
-					temp += instruction[i];
-				}
+				temp += instruction[i];
 			}
+		}
 
-			return temp;	
+		return temp;
 	}
 
-	return error;
+	return "";
 }
 
+//close the file
 vm_parser::~vm_parser()
 {
 	inputFile.close();

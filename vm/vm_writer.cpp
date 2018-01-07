@@ -2,11 +2,23 @@
 #include <iostream>
 
 
-vm_writer::vm_writer()
+vm_writer::vm_writer(std::string s)
 {
-	outputFile.open("C:\\Users\\Cameron\\nand2tetris\\projects\\07\\MemoryAccess\\PointerTest\\PointerTest.asm");
+	ltCount = 1;
+	eqCount = 1;
+	gtCount = 1;
+
+	//hold file name for use with static variables
+	fileName = s;
+
+	//create file name with asm extension
+	s = s + ".asm";
+
+	//open file for writing
+	outputFile.open(s);
 }
 
+//writes push and pop commands for all segments
 void vm_writer::writePushPop(Command c, Segment s, int x)
 {
 	if (c == C_PUSH)
@@ -129,6 +141,18 @@ void vm_writer::writePushPop(Command c, Segment s, int x)
 			outputFile << "@R13" << std::endl;
 			outputFile << "A=M" << std::endl;
 			outputFile << "D=M" << std::endl;
+			outputFile << "@SP" << std::endl;
+			outputFile << "A=M" << std::endl;
+			outputFile << "M=D" << std::endl;
+			outputFile << "@SP" << std::endl;
+			outputFile << "M=M+1" << std::endl;
+		}
+
+		else if (s == STATIC)
+		{
+			outputFile << "@" << fileName << '.' << x << std::endl;
+			outputFile << "D=M" << std::endl;
+			outputFile << "M=0" << std::endl;
 			outputFile << "@SP" << std::endl;
 			outputFile << "A=M" << std::endl;
 			outputFile << "M=D" << std::endl;
@@ -258,10 +282,28 @@ void vm_writer::writePushPop(Command c, Segment s, int x)
 			outputFile << "M=D" << std::endl;
 		}
 
+		else if (s == STATIC)
+		{
+			outputFile << "@" << fileName << '.' << x << std::endl;
+			outputFile << "D=A" << std::endl;
+			outputFile << "@R13" << std::endl;
+			outputFile << "M=D" << std::endl;
+			outputFile << "@SP" << std::endl;
+			outputFile << "M=M-1" << std::endl;
+			outputFile << "@SP" << std::endl;
+			outputFile << "A=M" << std::endl;
+			outputFile << "D=M" << std::endl;
+			outputFile << "M=0" << std::endl;
+			outputFile << "@R13" << std::endl;
+			outputFile << "A=M" << std::endl;
+			outputFile << "M=D" << std::endl;
+		}
+
 	}
 
 }
 
+//writes arithmetic commands
 void vm_writer::writeArithmetic(Segment s)
 {
 
@@ -476,7 +518,7 @@ void vm_writer::writeArithmetic(Segment s)
 	}
 }
 
-
+//close the file
 vm_writer::~vm_writer()
 {
 	outputFile.close();

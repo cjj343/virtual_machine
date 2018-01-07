@@ -1,6 +1,5 @@
 #ifndef VM_PARSER_H
 #define VM_PARSER_H
-#pragma once
 #include <fstream>
 #include <string>
 
@@ -11,11 +10,9 @@ class vm_parser
 {
 
 private:
-	//std::string file;
 	std::ifstream inputFile;
 	std::string instruction;
 	Command type;
-	std::string error = "null";
 	bool openError;
 
 
@@ -23,9 +20,6 @@ public:
 	vm_parser(std::string);
 	bool hasMoreCommands();
 	void advance();
-	//bool notCommentLine();
-	//bool notBlankLine();
-	//void deleteComment();
 	bool errorCheck();
 	Command commandType();
 	Segment arg1();
