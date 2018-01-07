@@ -4,7 +4,7 @@
 
 vm_writer::vm_writer()
 {
-	outputFile.open("C:\\Users\\Cameron\\nand2tetris\\projects\\07\\MemoryAccess\\BasicTest\\BasicTest.asm");
+	outputFile.open("C:\\Users\\Cameron\\nand2tetris\\projects\\07\\MemoryAccess\\PointerTest\\PointerTest.asm");
 }
 
 void vm_writer::writePushPop(Command c, Segment s, int x)
@@ -117,6 +117,24 @@ void vm_writer::writePushPop(Command c, Segment s, int x)
 			outputFile << "@SP" << std::endl;
 			outputFile << "M=M+1" << std::endl;
 		}
+
+		else if (s == POINTER)
+		{
+			outputFile << "@R3" << std::endl;
+			outputFile << "D=A" << std::endl;
+			outputFile << '@' << x << std::endl;
+			outputFile << "D=D+A" << std::endl;
+			outputFile << "@R13" << std::endl;
+			outputFile << "M=D" << std::endl;
+			outputFile << "@R13" << std::endl;
+			outputFile << "A=M" << std::endl;
+			outputFile << "D=M" << std::endl;
+			outputFile << "@SP" << std::endl;
+			outputFile << "A=M" << std::endl;
+			outputFile << "M=D" << std::endl;
+			outputFile << "@SP" << std::endl;
+			outputFile << "M=M+1" << std::endl;
+		}
 	}
 
 	else if (c = C_POP)
@@ -204,7 +222,6 @@ void vm_writer::writePushPop(Command c, Segment s, int x)
 
 		else if (s == TEMP)
 		{
-
 			outputFile << "@R5" << std::endl;
 			outputFile << "D=A" << std::endl;
 			outputFile << '@' << x << std::endl;
@@ -220,7 +237,25 @@ void vm_writer::writePushPop(Command c, Segment s, int x)
 			outputFile << "@R13" << std::endl;
 			outputFile << "A=M" << std::endl;
 			outputFile << "M=D" << std::endl;
+		}
 
+		else if (s == POINTER)
+		{
+			outputFile << "@R3" << std::endl;
+			outputFile << "D=A" << std::endl;
+			outputFile << '@' << x << std::endl;
+			outputFile << "D=D+A" << std::endl;
+			outputFile << "@R13" << std::endl;
+			outputFile << "M=D" << std::endl;
+			outputFile << "@SP" << std::endl;
+			outputFile << "M=M-1" << std::endl;
+			outputFile << "@SP" << std::endl;
+			outputFile << "A=M" << std::endl;
+			outputFile << "D=M" << std::endl;
+			outputFile << "M=0" << std::endl;
+			outputFile << "@R13" << std::endl;
+			outputFile << "A=M" << std::endl;
+			outputFile << "M=D" << std::endl;
 		}
 
 	}
