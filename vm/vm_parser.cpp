@@ -7,6 +7,7 @@ vm_parser::vm_parser(std::string s)
 {
 	openError = false;
 	inputFile.open(s);
+	type = CERROR;
 
 	if (inputFile.fail())
 	{

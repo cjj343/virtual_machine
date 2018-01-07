@@ -161,7 +161,7 @@ void vm_writer::writePushPop(Command c, Segment s, int x)
 		}
 	}
 
-	else if (c = C_POP)
+	else if (c == C_POP)
 	{
 		if (s == LOCAL)
 		{

@@ -4,6 +4,7 @@
 #include "vm_writer.h"
 #include <vector>
 #include <cctype>
+  
 
 std::string fileStub(std::string);
 
@@ -86,7 +87,6 @@ std::string fileStub(std::string s)
 {
 	std::size_t pos = s.find('.');
 	std::string stub = s.substr(0, pos);
-	std::cout << stub << std::endl;
 	return stub;
 
 }
