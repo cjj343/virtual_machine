@@ -14,6 +14,7 @@ private:
 	std::string instruction;
 	Command type;
 	bool openError;
+	std::string functionName;
 
 
 public:
@@ -24,6 +25,9 @@ public:
 	Command commandType();
 	Segment arg1();
 	std::string arg2();
+	std::string labelName();
+	std::string ifGoto();
+	std::string Goto();
 	~vm_parser();
 };
 

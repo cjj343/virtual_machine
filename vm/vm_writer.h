@@ -17,6 +17,9 @@ public:
 	vm_writer(std::string);
 	void writePushPop(Command c, Segment s, int x);
 	void writeArithmetic(Segment);
+	void writeLabel(std::string);
+	void writeIfGoto(std::string);
+	void writeGoto(std::string);
 	~vm_writer();
 };
 #endif

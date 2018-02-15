@@ -15,7 +15,7 @@ vm_writer::vm_writer(std::string s)
 	s = s + ".asm";
 
 	//open file for writing
-	outputFile.open(s);
+	outputFile.open("C:\\Users\\Cameron\\Documents\\nand2tetris\\projects\\08\\ProgramFlow\\BasicLoop\\"+s);
 }
 
 //writes push and pop commands for all segments
@@ -516,6 +516,27 @@ void vm_writer::writeArithmetic(Segment s)
 		outputFile << "@SP" <<  std::endl;
 		outputFile << "M=M+1" <<  std::endl;
 	}
+}
+
+void vm_writer::writeLabel(std::string s)
+{
+	outputFile << s << std::endl;
+}
+
+void vm_writer::writeIfGoto(std::string s)
+{
+	outputFile << "@SP" << std::endl;
+	outputFile << "AM=M-1" << std::endl;
+	outputFile << "D=M" << std::endl;
+	outputFile << "M=0" << std::endl;
+	outputFile << s << std::endl;
+	outputFile << "D;JNE" << std::endl;
+}
+
+void vm_writer::writeGoto(std::string s)
+{
+	outputFile << s << std::endl;
+	outputFile << "0;JMP" << std::endl;
 }
 
 //close the file

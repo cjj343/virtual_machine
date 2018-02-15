@@ -8,6 +8,7 @@ vm_parser::vm_parser(std::string s)
 	openError = false;
 	inputFile.open(s);
 	type = CERROR;
+	functionName = "";
 
 	if (inputFile.fail())
 	{
@@ -147,6 +148,31 @@ Command vm_parser::commandType()
 		return type;
 	}
 
+	found = instruction.find("label");
+	if (found != std::string::npos)
+	{
+		type = C_LABEL;
+		return type;
+	}
+
+	found = instruction.find("goto");
+	if (found != std::string::npos)
+	{
+		found = instruction.find("if-");
+
+		if (found != std::string::npos)
+		{
+			type = C_IF;
+			return type;
+		}
+
+		else
+		{
+			type = C_GOTO;
+			return type;
+		}
+	}
+
 	return CERROR;
 
 }
@@ -284,6 +310,30 @@ std::string vm_parser::arg2()
 	}
 
 	return "";
+}
+
+std::string vm_parser::labelName()
+{
+	std::size_t pos = 6;
+	std::string labelName = instruction.substr(pos);
+	labelName = "(" + functionName + "$" + labelName + ")";
+	return labelName;
+}
+
+std::string vm_parser::ifGoto()
+{
+	std::size_t pos = 8;
+	std::string ifGoto = instruction.substr(pos);
+	ifGoto = "@" + functionName + "$" + ifGoto;
+	return ifGoto;
+}
+
+std::string vm_parser::Goto()
+{
+	std::size_t pos = 5;
+	std::string Goto = instruction.substr(pos);
+	Goto = "@" + functionName + "$" + Goto;
+	return Goto;
 }
 
 //close the file

@@ -17,6 +17,7 @@ int main(int argc, char* argv[])
 	int index;
 	std::string stub;
 
+
 	// Check the number of parameters
 	if (argc < 2)
 	{
@@ -53,34 +54,61 @@ int main(int argc, char* argv[])
 			//get command type
 			comType = ptr->commandType();
 
-			//get segment type
-			segType = ptr->arg1();
-
-			//if command is an arithmetic command
-			if (comType == C_ARITHMETIC)
+			//if the command is a label for a loop
+			if (comType == C_LABEL)
 			{
-				writePtr->writeArithmetic(segType);
+				//send to writer
+				writePtr->writeLabel(ptr->labelName());
 			}
 
-			//if command is a push or pop command
-			else if (comType == C_PUSH || comType == C_POP)
+			//if the command is a conditional jump
+			else if (comType == C_IF)
 			{
-				index = std::stoi(ptr->arg2());
-				writePtr->writePushPop(comType, segType, index);
+				//get label name and pass to writer
+				writePtr->writeIfGoto(ptr->ifGoto());
 			}
 
+			//if the the command is an unconditional jump
+			else if (comType == C_GOTO)
+			{
+				//get label name and pass to writer
+				writePtr->writeGoto(ptr->Goto());
+			}
+
+			else if (comType == C_ARITHMETIC || C_PUSH || C_POP)
+			{
+				//get segment type
+				segType = ptr->arg1();
+
+				//if command is an arithmetic command
+				if (comType == C_ARITHMETIC)
+				{
+					writePtr->writeArithmetic(segType);
+				}
+
+				//if command is a push or pop command
+				else if (comType == C_PUSH || comType == C_POP)
+				{
+					index = std::stoi(ptr->arg2());
+					writePtr->writePushPop(comType, segType, index);
+				}
+			}
 		}
 
-		//memory clean up
-		delete ptr;
-		ptr = nullptr;
-
-		delete writePtr;
-		writePtr = nullptr;
 	}
+
+	//memory clean up
+	delete ptr;
+	ptr = nullptr;
+
+	delete writePtr;
+	writePtr = nullptr;
+
 
 	return 0;
 }
+
+
 
 //get rid of file extension for writing
 std::string fileStub(std::string s)
