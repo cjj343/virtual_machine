@@ -1,0 +1,13 @@
+*.tst
+*.cmp
+*.html
+*.out
+*.sln
+*.exe
+*.un~
+*.obj
+*.gitignore~
+*.swp
+*Debug*
+*.vs*
+*Makefile*
