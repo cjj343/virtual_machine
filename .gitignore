@@ -11,3 +11,5 @@
 *Debug*
 *.vs*
 *Makefile*
+*.vcxproj
+*.filters
