@@ -15,7 +15,7 @@ vm_writer::vm_writer(std::string s)
 	s = s + ".asm";
 
 	//open file for writing
-	outputFile.open("C:\\Users\\Cameron\\Documents\\nand2tetris\\projects\\08\\ProgramFlow\\BasicLoop\\"+s);
+	outputFile.open(s);
 }
 
 //writes push and pop commands for all segments
