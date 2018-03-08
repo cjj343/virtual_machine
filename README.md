@@ -3,7 +3,7 @@ Virtual Machine for the Hack Computer build
 
 Virtual Machine:
 This is the virtual machine for the Hack Computer built in Nand2Tetris curriculum. It is designed to take VM files and translate them into Hack assembly code.  The assembler then takes the assembly code and translates it into binary.
-There are a lot of things I would do different if I were to redo this project, but I think this means that I must have learned a lot. For one, I worked on this while learning c++ which is why there are some varying design choices and some things aren’t quite optimized. For example, if I were to redo this project, I would rework the vm_writer class so that there isn’t so much repeated assembly code. A simple optimization would be to create separate functions for certain commands like pushing and popping onto the stack.
+There are a lot of things I would do different if I were to redo this project, but I think this means that I must have learned a lot. For one, I worked on this while learning c++ which is why there are some varying design choices and some things that aren’t quite optimized. For example, if I were to redo this project, I would rework the vm_writer class so that there isn’t so much repeated assembly code. A simple optimization would be to create separate functions for certain commands like pushing and popping onto the stack.
 This was also one of the first projects where I attempted to use Git correctly (rather than just blindly pushing completed code in one commit).  I learned a lot about the value of version control and how to efficiently use Git in the dev process.
 
 Getting Started:
