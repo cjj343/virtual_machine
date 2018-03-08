@@ -6,7 +6,8 @@
 #include <cctype>
   
 
-std::string fileStub(std::string);
+std::string getFileName();
+std::string getFileStub(std::string);
 
 int main(int argc, char* argv[])
 {
@@ -15,7 +16,6 @@ int main(int argc, char* argv[])
 	vm_writer *writePtr = nullptr;
 	vm_parser *ptr = nullptr;
 	int index;
-	std::string stub;
 
 
 	// Check the number of parameters
@@ -25,12 +25,19 @@ int main(int argc, char* argv[])
 		std::cout << "Usage: " << argv[0] << "<FILE NAME or DIRECTORY>" << std::endl;
 		return 1;
 	}
+
+	std::string fileName = getFileName();
+
+	//new writer object with file stub
+	writePtr = new vm_writer(fileName);
+	writePtr->writeBootStrap();
 	
 	//loop for all the files entered on command line
 	for (int fileCount = 1; fileCount < argc; fileCount++)
 	{
 		std::string s = argv[fileCount];
-		stub = fileStub(s);
+		std::string fileStub = getFileStub(s);
+		writePtr->setFileStub(fileStub);
 
 		//new parser object with initialized with file name
 		ptr = new vm_parser(s);
@@ -42,9 +49,6 @@ int main(int argc, char* argv[])
 			return 1;
 		}
 
-		//new writer object with file stub
-		writePtr = new vm_writer(stub);
-
 		//while there are more commands
 		while (ptr->hasMoreCommands())
 		{
@@ -54,48 +58,98 @@ int main(int argc, char* argv[])
 			//get command type
 			comType = ptr->commandType();
 
-			//if the command is a label for a loop
-			if (comType == C_LABEL)
+			switch(comType)
 			{
-				//send to writer
-				writePtr->writeLabel(ptr->labelName());
-			}
-
-			//if the command is a conditional jump
-			else if (comType == C_IF)
-			{
-				//get label name and pass to writer
-				writePtr->writeIfGoto(ptr->ifGoto());
-			}
-
-			//if the the command is an unconditional jump
-			else if (comType == C_GOTO)
-			{
-				//get label name and pass to writer
-				writePtr->writeGoto(ptr->Goto());
-			}
-
-			else if (comType == C_ARITHMETIC || C_PUSH || C_POP)
-			{
-				//get segment type
-				segType = ptr->arg1();
-
-				//if command is an arithmetic command
-				if (comType == C_ARITHMETIC)
+				case C_ARITHMETIC:
 				{
+					//get segment type
+					segType = ptr->arg1();
+
+					//write
 					writePtr->writeArithmetic(segType);
 				}
+				break;
 
-				//if command is a push or pop command
-				else if (comType == C_PUSH || comType == C_POP)
+				case C_PUSH:
 				{
+					//get segment type
+					segType = ptr->arg1();
+
+					//get arg2
 					index = std::stoi(ptr->arg2());
+
+					//write
 					writePtr->writePushPop(comType, segType, index);
 				}
+				break;
+
+				case C_POP:
+				{
+					//get segment type
+					segType = ptr->arg1();
+
+					//get arg2
+					index = std::stoi(ptr->arg2());
+
+					//write
+					writePtr->writePushPop(comType, segType, index);
+				}
+				break;
+
+				case C_LABEL:
+				{
+					//send to writer
+					writePtr->writeLabel(ptr->labelName());
+				}
+				break;
+
+				case C_RETURN:
+				{
+					//send to writer
+					writePtr->writeReturn();
+				}
+				break;
+
+				case C_FUNCTION:
+				{
+					//get the function name and number of args
+					std::string functionName = ptr->Function();
+					int lcls = std::stoi(ptr->arg2());
+
+					//semd to writer
+					writePtr->writeFunction(functionName, lcls);
+				}
+				break;
+
+				case C_IF:
+				{
+					//get label name and pass to writer
+					writePtr->writeIfGoto(ptr->ifGoto());
+				}
+				break;
+
+				case C_GOTO:
+				{
+					//get label name and pass to writer
+					writePtr->writeGoto(ptr->Goto());
+				}
+				break;
+
+				case C_CALL:
+				{
+					//get args
+					int args = std::stoi(ptr->arg2());
+
+					//send function name and args to writer
+					writePtr->writeCall(ptr->Call(), args);
+				}
+				break;
+
 			}
 		}
-
 	}
+
+	
 
 	//memory clean up
 	delete ptr;
@@ -111,10 +165,19 @@ int main(int argc, char* argv[])
 
 
 //get rid of file extension for writing
-std::string fileStub(std::string s)
+std::string getFileName()
 {
-	std::size_t pos = s.find('.');
-	std::string stub = s.substr(0, pos);
-	return stub;
+	std::string fileName;
+	std::cout << "Enter the name of the output file: ";
+	std::getline(std::cin, fileName);
+	return fileName;
 
+}
+
+std::string getFileStub(std::string s)
+{
+	std::string fileStub;
+	size_t pos = s.find('.');
+	fileStub = s.substr(0, pos);
+	return fileStub;
 }

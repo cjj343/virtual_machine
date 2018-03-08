@@ -71,108 +71,63 @@ void vm_parser::advance()
 //find the command type
 Command vm_parser::commandType()
 {
-	size_t found = instruction.find("add");
-	if (found != std::string::npos) 
+
+	if (instruction.substr(0, 3) == "add" || instruction.substr(0, 2) == "eq" || instruction.substr(0, 2) == "lt" || instruction.substr(0, 2) == "gt" || instruction.substr(0, 3) == "neg" ||
+		instruction.substr(0, 3) == "not" || instruction.substr(0, 3) == "and" || instruction.substr(0, 2) == "or" || instruction.substr(0, 3) == "sub")
 	{
 		type = C_ARITHMETIC;
 		return type;
 	}
 
-	found = instruction.find("eq");
-	if (found != std::string::npos) 
-	{
-		type = C_ARITHMETIC;
-		return type;
-	}
-
-	found = instruction.find("lt");
-	if (found != std::string::npos)
-	{
-		type = C_ARITHMETIC;
-		return type;
-	}
-
-	found = instruction.find("gt");
-	if (found != std::string::npos)
-	{
-		type = C_ARITHMETIC;
-		return type;
-	}
-
-	found = instruction.find("neg");
-	if (found != std::string::npos)
-	{
-		type = C_ARITHMETIC;
-		return type;
-	}
-
-	found = instruction.find("not");
-	if (found != std::string::npos)
-	{
-		type = C_ARITHMETIC;
-		return type;
-	}
-
-	found = instruction.find("and");
-	if (found != std::string::npos)
-	{
-		type = C_ARITHMETIC;
-		return type;
-	}
-
-	found = instruction.find("or");
-	if (found != std::string::npos)
-	{
-		type = C_ARITHMETIC;
-		return type;
-	}
-
-	found = instruction.find("sub");
-	if (found != std::string::npos)
-	{
-		type = C_ARITHMETIC;
-		return type;
-	}
-
-	found = instruction.find("push");
-	if (found != std::string::npos)
+	else if (instruction.substr(0, 4) == "push")
 	{
 		type = C_PUSH;
 		return type;
 	}
 
-	found = instruction.find("pop");
-	if (found != std::string::npos)
+	else if (instruction.substr(0, 3) == "pop")
 	{
+		std::cout << "pop" << std::endl;
 		type = C_POP;
 		return type;
 	}
 
-	found = instruction.find("label");
-	if (found != std::string::npos)
+	else if (instruction.substr(0, 5) == "label")
 	{
 		type = C_LABEL;
 		return type;
 	}
 
-	found = instruction.find("goto");
-	if (found != std::string::npos)
+	else if (instruction.substr(0, 8) == "function")
 	{
-		found = instruction.find("if-");
-
-		if (found != std::string::npos)
-		{
-			type = C_IF;
-			return type;
-		}
-
-		else
-		{
-			type = C_GOTO;
-			return type;
-		}
+		type = C_FUNCTION;
+		return type;
 	}
 
+	else if (instruction.substr(0, 4) == "goto")
+	{
+		type = C_GOTO;
+		return type;
+	}
+
+	else if (instruction.substr(0, 2) == "if")
+	{
+		type = C_IF;
+		return type;
+	}
+
+	else if (instruction.substr(0, 6) == "return")
+	{
+		type = C_RETURN;
+		return type;
+	}
+
+	else if (instruction.substr(0, 4) == "call")
+	{
+		type = C_CALL;
+		return type;
+	}
+		
 	return CERROR;
 
 }
@@ -182,107 +137,145 @@ Segment vm_parser::arg1()
 {
 	if (type == C_ARITHMETIC)
 	{
-		size_t found = instruction.find("add");
-		if (found != std::string::npos)
+
+		if(instruction.substr(0,3) == "add")
 		{
 			return ADD;
 		}
 
-		found = instruction.find("sub");
-		if (found != std::string::npos)
+		else if (instruction.substr(0, 3) == "sub")
 		{
 			return SUB;
 		}
 
-		found = instruction.find("neg");
-		if (found != std::string::npos)
+		else if (instruction.substr(0, 3) == "neg")
 		{
 			return NEG;
 		}
 
-		found = instruction.find("eq");
-		if (found != std::string::npos)
+		else if (instruction.substr(0, 2) == "eq")
 		{
 			return EQ;
 		}
 
-		found = instruction.find("gt");
-		if (found != std::string::npos)
+		else if (instruction.substr(0, 2) == "gt")
 		{
 			return GT;
 		}
 
-		found = instruction.find("lt");
-		if (found != std::string::npos)
+		else if (instruction.substr(0, 2) == "lt")
 		{
 			return LT;
 		}
 
-		found = instruction.find("and");
-		if (found != std::string::npos)
+		else if (instruction.substr(0, 3) == "and")
 		{
 			return AND;
 		}
 
-		found = instruction.find("or");
-		if (found != std::string::npos)
+		else if (instruction.substr(0, 2) == "or")
 		{
 			return OR;
 		}
 
-		found = instruction.find("not");
-		if (found != std::string::npos)
+		else if (instruction.substr(0, 3) == "not")
 		{
 			return NOT;
 		}
+
 	}
 
-	else if (type == C_PUSH || type == C_POP)
+	else if (type == C_PUSH)
 	{
-		size_t found = instruction.find("argument");
-		if (found != std::string::npos)
+		//find the spaces
+		size_t firstSpace = instruction.find(' ');
+		size_t secondSpace = instruction.find(' ', firstSpace + 1);
+
+
+		if (instruction.substr(firstSpace+1, secondSpace - firstSpace - 1) == "argument")
 		{
 			return ARGUMENT;
 		}
 
-		found = instruction.find("local");
-		if (found != std::string::npos)
+		else if (instruction.substr(firstSpace + 1, secondSpace - firstSpace - 1) == "local")
 		{
 			return LOCAL;
 		}
 
-		found = instruction.find("static");
-		if (found != std::string::npos)
+		else if (instruction.substr(firstSpace + 1, secondSpace - firstSpace - 1) == "static")
 		{
 			return STATIC;
 		}
 
-		found = instruction.find("constant");
-		if (found != std::string::npos)
+		else if (instruction.substr(firstSpace + 1, secondSpace - firstSpace - 1) == "constant")
 		{
 			return CONSTANT;
 		}
 
-		found = instruction.find("this");
-		if (found != std::string::npos)
+		else if (instruction.substr(firstSpace + 1, secondSpace - firstSpace - 1) == "this")
 		{
 			return THIS;
 		}
 
-		found = instruction.find("that");
-		if (found != std::string::npos)
+		else if (instruction.substr(firstSpace + 1, secondSpace - firstSpace - 1) == "that")
 		{
 			return THAT;
 		}
 
-		found = instruction.find("pointer");
-		if (found != std::string::npos)
+		else if (instruction.substr(firstSpace + 1, secondSpace - firstSpace - 1) == "pointer")
 		{
 			return POINTER;
 		}
 
-		found = instruction.find("temp");
-		if (found != std::string::npos)
+		else if (instruction.substr(firstSpace + 1, secondSpace - firstSpace - 1) == "temp")
+		{
+			return TEMP;
+		}
+	}
+
+	else if (type == C_POP)
+	{
+		//find the spaces
+		size_t firstSpace = instruction.find(' ');
+		size_t secondSpace = instruction.find(' ', firstSpace + 1);
+
+
+		if (instruction.substr(firstSpace + 1, secondSpace - firstSpace - 1) == "argument")
+		{
+			return ARGUMENT;
+		}
+
+		else if (instruction.substr(firstSpace + 1, secondSpace - firstSpace - 1) == "local")
+		{
+			return LOCAL;
+		}
+
+		else if (instruction.substr(firstSpace + 1, secondSpace - firstSpace - 1) == "static")
+		{
+			return STATIC;
+		}
+
+		else if (instruction.substr(firstSpace + 1, secondSpace - firstSpace - 1) == "constant")
+		{
+			return CONSTANT;
+		}
+
+		else if (instruction.substr(firstSpace + 1, secondSpace - firstSpace - 1) == "this")
+		{
+			return THIS;
+		}
+
+		else if (instruction.substr(firstSpace + 1, secondSpace - firstSpace - 1) == "that")
+		{
+			return THAT;
+		}
+
+		else if (instruction.substr(firstSpace + 1, secondSpace - firstSpace - 1) == "pointer")
+		{
+			return POINTER;
+		}
+
+		else if (instruction.substr(firstSpace + 1, secondSpace - firstSpace - 1) == "temp")
 		{
 			return TEMP;
 		}
@@ -295,45 +288,66 @@ Segment vm_parser::arg1()
 std::string vm_parser::arg2()
 {
 	std::string temp;
+	size_t firstSpace = instruction.find(' ');
+	size_t secondSpace = instruction.find(' ', firstSpace + 1);
 
-	if (type == C_PUSH || type == C_POP)
+
+	for (size_t i = secondSpace+1; i < instruction.length(); i++)
 	{
-		for (size_t i = 0; i < instruction.length(); i++)
+		if (isdigit(instruction[i]))
 		{
-			if (isdigit(instruction[i]))
-			{
-				temp += instruction[i];
-			}
+			temp += instruction[i];
 		}
-
-		return temp;
 	}
 
-	return "";
+	return temp;
+	
 }
 
 std::string vm_parser::labelName()
 {
-	std::size_t pos = 6;
-	std::string labelName = instruction.substr(pos);
+	size_t firstSpace = instruction.find(' ');
+	size_t secondSpace = instruction.find(' ', firstSpace + 1);
+	std::string labelName = instruction.substr(firstSpace + 1, secondSpace - firstSpace - 1);
 	labelName = "(" + functionName + "$" + labelName + ")";
 	return labelName;
 }
 
 std::string vm_parser::ifGoto()
 {
-	std::size_t pos = 8;
-	std::string ifGoto = instruction.substr(pos);
+	size_t firstSpace = instruction.find(' ');
+	size_t secondSpace = instruction.find(' ', firstSpace + 1);
+	std::string ifGoto = instruction.substr(firstSpace + 1, secondSpace - firstSpace - 1);
 	ifGoto = "@" + functionName + "$" + ifGoto;
 	return ifGoto;
 }
 
 std::string vm_parser::Goto()
 {
-	std::size_t pos = 5;
-	std::string Goto = instruction.substr(pos);
+	size_t firstSpace = instruction.find(' ');
+	size_t secondSpace = instruction.find(' ', firstSpace + 1);
+	std::string Goto = instruction.substr(firstSpace + 1, secondSpace - firstSpace - 1);
 	Goto = "@" + functionName + "$" + Goto;
 	return Goto;
+}
+
+std::string vm_parser::Function()
+{
+	size_t firstSpace = instruction.find(' ');
+	size_t secondSpace = instruction.find(' ', firstSpace + 1);
+
+	//create substring without function designation
+	functionName = instruction.substr(firstSpace + 1, secondSpace - firstSpace - 1);
+
+	return "(" + functionName + ")";
+}
+
+std::string vm_parser::Call()
+{
+	size_t firstSpace = instruction.find(' ');
+	size_t secondSpace = instruction.find(' ', firstSpace + 1);
+
+	return instruction.substr(firstSpace + 1, secondSpace - firstSpace - 1);
 }
 
 //close the file

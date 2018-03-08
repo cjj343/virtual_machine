@@ -28,6 +28,8 @@ public:
 	std::string labelName();
 	std::string ifGoto();
 	std::string Goto();
+	std::string Function();
+	std::string Call();
 	~vm_parser();
 };
 

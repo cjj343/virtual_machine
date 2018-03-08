@@ -8,10 +8,11 @@ class vm_writer
 {
 private:
 	std::ofstream outputFile;
-	std::string fileName;
+	std::string fileStub;
 	int eqCount;
 	int ltCount;
 	int gtCount;
+	int retCount;
 
 public:
 	vm_writer(std::string);
@@ -20,6 +21,11 @@ public:
 	void writeLabel(std::string);
 	void writeIfGoto(std::string);
 	void writeGoto(std::string);
+	void writeFunction(std::string, int);
+	void writeReturn();
+	void writeCall(std::string, int);
+	void writeBootStrap();
+	void setFileStub(std::string);
 	~vm_writer();
 };
 #endif
