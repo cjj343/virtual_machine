@@ -147,14 +147,13 @@ int main(int argc, char* argv[])
 
 			}
 		}
+
+		//memory clean up
+		delete ptr;
+		ptr = nullptr;
 	}
 
-	
-
 	//memory clean up
-	delete ptr;
-	ptr = nullptr;
-
 	delete writePtr;
 	writePtr = nullptr;
 
@@ -164,7 +163,7 @@ int main(int argc, char* argv[])
 
 
 
-//get rid of file extension for writing
+//get file name from user
 std::string getFileName()
 {
 	std::string fileName;
@@ -174,6 +173,7 @@ std::string getFileName()
 
 }
 
+//get rid of file extension so that file name can be used by writer
 std::string getFileStub(std::string s)
 {
 	std::string fileStub;
