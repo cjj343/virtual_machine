@@ -304,6 +304,8 @@ std::string vm_parser::arg2()
 	
 }
 
+//finds the name of a label command
+//adds syntax for to be passed to writer
 std::string vm_parser::labelName()
 {
 	size_t firstSpace = instruction.find(' ');
@@ -313,6 +315,8 @@ std::string vm_parser::labelName()
 	return labelName;
 }
 
+//finds the label for the if-goto statement
+//adds syntax to be passed to writer
 std::string vm_parser::ifGoto()
 {
 	size_t firstSpace = instruction.find(' ');
@@ -322,6 +326,8 @@ std::string vm_parser::ifGoto()
 	return ifGoto;
 }
 
+//finds the label for the if-goto statement
+//adds syntax to be passed to writer
 std::string vm_parser::Goto()
 {
 	size_t firstSpace = instruction.find(' ');
@@ -331,6 +337,8 @@ std::string vm_parser::Goto()
 	return Goto;
 }
 
+//handles parsing function commands
+//adds syntax to be passed to writer
 std::string vm_parser::Function()
 {
 	size_t firstSpace = instruction.find(' ');
@@ -342,6 +350,7 @@ std::string vm_parser::Function()
 	return "(" + functionName + ")";
 }
 
+//parses function call commands
 std::string vm_parser::Call()
 {
 	size_t firstSpace = instruction.find(' ');

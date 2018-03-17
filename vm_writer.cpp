@@ -2,6 +2,7 @@
 #include <iostream>
 
 
+//initialized counting variables for lt, eq, gt and return 
 vm_writer::vm_writer(std::string s)
 {
 	ltCount = 1;
@@ -11,7 +12,9 @@ vm_writer::vm_writer(std::string s)
 
 	//create file name with asm extension
 	s = s + ".asm";
-	s = "C:\\Users\\Cameron\\Documents\\nand2tetris\\projects\\08\\FunctionCalls\\StaticsTest\\" + s;
+
+	//un-comment the command below if you want to change the destination for the asm file
+	//s = "<directory>" + s;
 
 	//open file for writing
 	outputFile.open(s);
@@ -578,12 +581,16 @@ void vm_writer::writeArithmetic(Segment s)
 	}
 }
 
+//writes label to file
+//syntax handled by parser
 void vm_writer::writeLabel(std::string s)
 {
 	outputFile << "//writing label" << std::endl;
 	outputFile << s << std::endl;
 }
 
+//writes ifgoto to file
+//syntax handled by parser
 void vm_writer::writeIfGoto(std::string s)
 {
 	outputFile << "//writing if-goto" << std::endl;
@@ -595,6 +602,8 @@ void vm_writer::writeIfGoto(std::string s)
 	outputFile << "D;JNE" << std::endl;
 }
 
+//writes goto to file
+//syntax handled by parser
 void vm_writer::writeGoto(std::string s)
 {
 	outputFile << "//writing goto" << std::endl;
@@ -602,11 +611,14 @@ void vm_writer::writeGoto(std::string s)
 	outputFile << "0;JMP" << std::endl;
 }
 
+//write function to file
 void vm_writer::writeFunction(std::string functionName, int lcls) 
 {
 	outputFile << "//writing function" << std::endl;
 	outputFile << functionName << std::endl;
 
+
+	//write a push constant block to initialize each local variable to 0
 	for (int i = 0; i < lcls; i++)
 	{
 		writePushPop(C_PUSH, CONSTANT, 0);
@@ -614,6 +626,7 @@ void vm_writer::writeFunction(std::string functionName, int lcls)
 
 }
 
+//write return to file
 void vm_writer::writeReturn()
 {
 	outputFile << "//writing return" << std::endl;
@@ -695,6 +708,7 @@ void vm_writer::writeReturn()
 
 }
 
+//write call to file
 void vm_writer::writeCall(std::string functionName, int args)
 {
 	//save return address
@@ -767,6 +781,7 @@ void vm_writer::writeCall(std::string functionName, int args)
 	retCount++;
 }
 
+//write bootstrap code
 void vm_writer::writeBootStrap()
 {
 	//initialize SP to 256
